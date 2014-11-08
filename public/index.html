@@ -7,22 +7,50 @@
             $(document).ready(function(){
                 var socket = new io()
         
-                $('#in').keyup(function() {
-                    console.log('in: ' + $('#in').val())
-                    socket.emit('in',$(' #in').val())
+                $('#hash-in').keyup(function() {
+                    var data = $('#hash-in').val()
+                    var type = $('#hash-type :selected').text()
+                    socket.emit('hash-in', [data, type])
                 })
 
-                socket.on('out', function(data) {
-                    console.log('out: ' + data)
-                    $('#out').html(data)
+                $('#crypto-submit').click(function() {
+                    var data = $('#crypto-in').val()
+                    var pass = $('#crypto-pass').val()
+                    var alg  = $('#crypto-alg :selected').text()
+                    var type = $('#crypto-type :selected').text()
+                    socket.emit('crypto-in', [data, pass, alg, type])
+                })
+                
+                socket.on('hash-out', function(data) {
+                    $('#hash-out').html(data)
+                })
+                
+                socket.on('crypto-out', function(data) {
+                    $('#crypto-out').html(data)
                 })
 
             })
         </script>
     </head>
     <body>
-        <h1>MD5</h1>
-        <input id='in' type='text' placeholder='md5' />
-        <span id='out'>n/a</span>
+        <h1>Hash</h1>
+        <select id='hash-type'>
+            <option>md5</option>
+            <option>sha1</option>
+        </select>
+        <input id='hash-in' type='text' placeholder='type...' />
+        <span id='hash-out'>n/a</span>
+        <h1>Encrypt/Decrypt</h1>
+        <textarea id='crypto-in'></textarea>
+        <input id='crypto-pass' type='password' placeholder='password' />
+        <span id='crypto-out'></span>
+        <select id='crypto-alg'>
+            <option>aes256</option>
+        </select>
+        <select id='crypto-type'>
+            <option>encrypt</option>
+            <option>decrypt</option>
+        </select>
+        <button id='crypto-submit'>submit</button>
     </body>
 </html>

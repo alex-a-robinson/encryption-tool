@@ -13,9 +13,31 @@ router.route('/').get(function(req, res) {
 
 io.on('connection', function(socket) {
     console.log('new connection')
-    socket.on('in', function(msg) {
-        console.log('in: ' + msg)
-        socket.emit('out', crypto.createHash('md5').update(msg).digest('hex'))
-        console.log('out: ' + crypto.createHash('md5').update(msg).digest('hex'))
+    socket.on('hash-in', function(msg) {
+        var data = msg[0]
+        var type = msg[1]
+        socket.emit('hash-out', crypto.createHash(type).update(data).digest('hex'))
+    })
+    
+    socket.on('crypto-in', function(msg) {
+        var data = msg[0]
+        var pass = msg[1]
+        var alg  = msg[2]
+        var type = msg[3]
+
+        var out = ''
+
+        if (type == 'encrypt') {
+            console.log('encrpting: ' + msg)
+            var cipher = crypto.createCipher(alg, pass)
+            console.log('cipher created')
+            var out = cipher.update(data, 'binary', 'hex') + cipher.final('hex');
+        } else {
+            console.log('decrypting: ' + msg)
+            var decipher = crypto.createDecipher(alg, pass);
+            var out = decipher.update(data, 'hex', 'binary') + decipher.final('binary')
+        }
+
+        socket.emit('crypto-out', out)
     })
 })
