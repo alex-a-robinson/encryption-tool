@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>Encryption tool</title>
+        <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
+        <script src='/socket.io/socket.io.js'></script>
+        <script type='text/javascript'>
+            $(document).ready(function(){
+                var socket = new io()
+        
+                $('#in').keyup(function() {
+                    console.log('in: ' + $('#in').val())
+                    socket.emit('in',$(' #in').val())
+                })
+
+                socket.on('out', function(data) {
+                    console.log('out: ' + data)
+                    $('#out').html(data)
+                })
+
+            })
+        </script>
+    </head>
+    <body>
+        <h1>MD5</h1>
+        <input id='in' type='text' placeholder='md5' />
+        <span id='out'>n/a</span>
+    </body>
+</html>
