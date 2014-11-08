@@ -1,0 +1,8 @@
+{
+    "name": "encryption-tool",
+    "description": "simple tool to encrypt and decrypt plaintext",
+    "dependencies": {
+        "express": ">= 4.10.1",
+        "socket.io": "^1.2.0"
+    }
+}
