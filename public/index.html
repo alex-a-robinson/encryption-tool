@@ -1,17 +1,17 @@
 <html>
     <head>
         <title>Encryption tool</title>
+
+        <meta name="viewport" content="width=320" />
+
         <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script>
         <script src='/socket.io/socket.io.js'></script>
         <script type='text/javascript'>
             $(document).ready(function(){
                 var socket = new io()
         
-                $('#hash-in').keyup(function() {
-                    var data = $('#hash-in').val()
-                    var type = $('#hash-type :selected').text()
-                    socket.emit('hash-in', [data, type])
-                })
+                $('#hash-in').keyup(updateHash)
+                $('#hash-type').change(updateHash)
 
                 $('#crypto-submit').click(function() {
                     var data = $('#crypto-in').val()
@@ -29,28 +29,100 @@
                     $('#crypto-out').html(data)
                 })
 
+                function updateHash() {
+                    var data = $('#hash-in').val()
+                    var type = $('#hash-type :selected').text()
+                    socket.emit('hash-in', [data, type])
+                }
+
             })
         </script>
+        <style type='text/css' ref='stylesheet'>
+            
+            body {
+                margin: 16px;
+                font-family: Helvetica, Arial;
+                color: #333333;
+            }
+
+            #container {
+                max-width: 800px;
+                margin: auto;
+            }
+
+            h1 {
+                color: #000000;
+            }
+
+            .hash {
+                width: 100%;
+            }
+
+            .in {
+                padding: 4px;
+            }
+
+            #hash-in {
+                width: 80%;
+            }
+
+            #crypto-pass {
+                width: 200px;
+            }
+
+            .out {
+                display: block;
+                width: 100%;
+                margin-top: 16px;
+                padding: 4px;
+            }
+
+            .crypto {
+                width: 100%;
+            }
+
+            #crypto-in {
+                display: block;
+                width: 100%;
+                margin-bottom: 16px;
+                padding: 4px;
+            }
+        </style>
     </head>
     <body>
-        <h1>Hash</h1>
-        <select id='hash-type'>
-            <option>md5</option>
-            <option>sha1</option>
-        </select>
-        <input id='hash-in' type='text' placeholder='type...' />
-        <span id='hash-out'>n/a</span>
+        <div id='container'>
+        <div class='hash'>
+            <h1>Hash</h1>
+            <input class='in' id='hash-in' type='text' placeholder='Type here...' />
+            <select id='hash-type'>
+                <option>md5</option>
+                <option>md4</option>
+                <option>sha1</option>
+                <option>sha256</option>
+                <option>sha512</option>
+            </select>
+            <textarea class='out' id='hash-out' disabled></textarea>
+        </div>
+        <div class='crypto'>
         <h1>Encrypt/Decrypt</h1>
-        <textarea id='crypto-in'></textarea>
-        <input id='crypto-pass' type='password' placeholder='password' />
-        <span id='crypto-out'></span>
-        <select id='crypto-alg'>
-            <option>aes256</option>
-        </select>
-        <select id='crypto-type'>
-            <option>encrypt</option>
-            <option>decrypt</option>
-        </select>
-        <button id='crypto-submit'>submit</button>
+            <textarea class='in' id='crypto-in' placeholder='Type here...'></textarea>
+            <input class='in' id='crypto-pass' type='password' placeholder='Password' />
+            <select id='crypto-alg'>
+                <option>aes256</option>
+                <option>aes192</option>
+                <option>aes128</option>
+                <option>des</option>
+                <option>des3</option>
+                <option>rc4</option>
+                <option>rc2</option>
+            </select>
+            <select id='crypto-type'>
+                <option>encrypt</option>
+                <option>decrypt</option>
+            </select>
+            <button id='crypto-submit'>submit</button>
+            <textarea class='out' id='crypto-out' disabled></textarea>
+        </div>
+        </div>
     </body>
 </html>
